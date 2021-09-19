@@ -8,4 +8,11 @@
     <artifactId>callGraph</artifactId>
     <version>1.0</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-tree</artifactId>
+            <version>9.0</version>
+        </dependency>
+    </dependencies>
 </project>
