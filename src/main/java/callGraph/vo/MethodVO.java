@@ -6,9 +6,9 @@ public class MethodVO {
     private String desc;
 
     public MethodVO(String className, String methodName, String desc) {
-        this.className = className;
-        this.methodName = methodName;
-        this.desc = desc;
+        this.className = className.replaceAll("/", ".");
+        this.methodName = methodName.replaceAll("/", ".");
+        this.desc = desc.replaceAll("/", ".");
     }
 
     public String getClassName() {
@@ -36,7 +36,7 @@ public class MethodVO {
     }
 
     public String getSig() {
-        return (className + ": " + methodName + desc).replaceAll("/", ".");
+        return className + ": " + methodName + desc;
     }
 
     @Override

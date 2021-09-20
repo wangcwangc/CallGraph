@@ -2,6 +2,7 @@ package callGraph.vo;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,18 +12,20 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class SourceClassManager {
+public class SourceMethodManager {
 
-    public static Set<String> getAllClassesFromPaths(List<String> paths) throws IOException {
-        Set<String> classSet = new HashSet<>();
+    public static Set<String> getAllMethodsFromPaths(List<String> paths) throws IOException {
+        Set<String> methodsSig = new HashSet<>();
         List<InputStream> classesStream = getAllClassesStream(paths);
         for (InputStream classInputStream : classesStream) {
             ClassReader classReader = new ClassReader(classInputStream);
             ClassNode classNode = new ClassNode();
             classReader.accept(classNode, 0);
-            classSet.add(classNode.name.replaceAll("/", "."));
+            for (MethodNode methodNode : classNode.methods) {
+                methodsSig.add((classNode.name + ": " + methodNode.name + methodNode.desc).replaceAll("/", "."));
+            }
         }
-        return classSet;
+        return methodsSig;
     }
 
     private static List<InputStream> getAllClassesStream(List<String> jarPaths) throws IOException {
