@@ -16,6 +16,20 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class CallGraph {
+
+    private static CallGraph cg;
+
+    private CallGraph() {
+
+    }
+
+    public static CallGraph getInstance() {
+        if (cg == null) {
+            cg = new CallGraph();
+        }
+        return cg;
+    }
+
     //将要处理的所有jar的路径
     List<String> jarPaths;
     //所有类文件的InputStream
@@ -23,7 +37,7 @@ public class CallGraph {
     //方法调用边
     List<MethodCall> methodCalls;
 
-    public CallGraph(List<String> jarPaths) {
+    public void addPaths(List<String> jarPaths) {
         //清空
 //        MethodCallManager.getInstance().clearMethodCalls();
         this.jarPaths = jarPaths;
@@ -58,8 +72,7 @@ public class CallGraph {
             ClassNode classNode = new ClassNode();
             classReader.accept(classNode, 0);
             for (MethodNode methodNode : classNode.methods) {
-                MethodVO callerMethodVO = new MethodVO(classNode.name, methodNode.name,
-                        methodNode.desc);
+                MethodVO callerMethodVO = new MethodVO(classNode.name, methodNode.name, methodNode.desc);
                 ListIterator<AbstractInsnNode> instructions = methodNode.instructions.iterator();
                 int lineNumber = -1;
                 while (instructions.hasNext()) {
