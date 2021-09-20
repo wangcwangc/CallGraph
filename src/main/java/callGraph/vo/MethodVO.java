@@ -36,7 +36,7 @@ public class MethodVO {
     }
 
     public String getSig() {
-        return className + ": " + methodName + desc;
+        return (className + ": " + methodName + desc).replaceAll("/", ".");
     }
 
     @Override

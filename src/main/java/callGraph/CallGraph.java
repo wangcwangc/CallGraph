@@ -1,6 +1,7 @@
 package callGraph;
 
 import callGraph.edge.MethodCall;
+import callGraph.edge.MethodCallManager;
 import callGraph.vo.MethodVO;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.*;
@@ -23,6 +24,8 @@ public class CallGraph {
     List<MethodCall> methodCalls;
 
     public CallGraph(List<String> jarPaths) {
+        //清空
+//        MethodCallManager.getInstance().clearMethodCalls();
         this.jarPaths = jarPaths;
         try {
             getAllClassesStream();
@@ -55,18 +58,17 @@ public class CallGraph {
             ClassNode classNode = new ClassNode();
             classReader.accept(classNode, 0);
             for (MethodNode methodNode : classNode.methods) {
-                MethodVO callerMethodVO = new MethodVO(classNode.name.replaceAll("/", "."), methodNode.name,
+                MethodVO callerMethodVO = new MethodVO(classNode.name, methodNode.name,
                         methodNode.desc);
                 ListIterator<AbstractInsnNode> instructions = methodNode.instructions.iterator();
                 int lineNumber = -1;
                 while (instructions.hasNext()) {
                     AbstractInsnNode node = instructions.next();
                     if (node instanceof MethodInsnNode) {
-                        MethodVO calledMethodVO = new MethodVO(((MethodInsnNode) node).owner
-                                .replaceAll("/", "."), ((MethodInsnNode) node).name,
-                                ((MethodInsnNode) node).desc);
+                        MethodVO calledMethodVO = new MethodVO(((MethodInsnNode) node).owner,
+                                ((MethodInsnNode) node).name, ((MethodInsnNode) node).desc);
                         MethodCall methodCall = new MethodCall(callerMethodVO, calledMethodVO, lineNumber);
-//                        System.out.println(methodCall);
+                        MethodCallManager.getInstance().addMethodCall(methodCall);
                     }
                     if (node instanceof LineNumberNode) {
                         lineNumber = ((LineNumberNode) node).line;

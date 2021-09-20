@@ -38,6 +38,14 @@ public class MethodCall {
         this.lineNumber = lineNumber;
     }
 
+    public String getCallerMethodSig() {
+        return callerMethod.getSig();
+    }
+
+    public String getCalledMethodSig() {
+        return calledMethod.getSig();
+    }
+
     @Override
     public String toString() {
         return "method call [" + callerMethod.getSig() + " -> " + calledMethod.getSig() + "] line: " + lineNumber;
