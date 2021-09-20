@@ -55,17 +55,18 @@ public class CallGraph {
             ClassNode classNode = new ClassNode();
             classReader.accept(classNode, 0);
             for (MethodNode methodNode : classNode.methods) {
-                MethodVO methodVO = new MethodVO(classNode.name.replaceAll("/", "."), methodNode.name,
+                MethodVO callerMethodVO = new MethodVO(classNode.name.replaceAll("/", "."), methodNode.name,
                         methodNode.desc);
                 ListIterator<AbstractInsnNode> instructions = methodNode.instructions.iterator();
                 int lineNumber = -1;
                 while (instructions.hasNext()) {
                     AbstractInsnNode node = instructions.next();
                     if (node instanceof MethodInsnNode) {
-                        System.out.println(lineNumber);//记录行号
-                        MethodVO classMethodVO = new MethodVO(((MethodInsnNode) node).owner
+                        MethodVO calledMethodVO = new MethodVO(((MethodInsnNode) node).owner
                                 .replaceAll("/", "."), ((MethodInsnNode) node).name,
                                 ((MethodInsnNode) node).desc);
+                        MethodCall methodCall = new MethodCall(callerMethodVO, calledMethodVO, lineNumber);
+//                        System.out.println(methodCall);
                     }
                     if (node instanceof LineNumberNode) {
                         lineNumber = ((LineNumberNode) node).line;
