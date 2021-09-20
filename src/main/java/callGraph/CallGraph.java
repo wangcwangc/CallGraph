@@ -6,6 +6,8 @@ import callGraph.vo.MethodVO;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,14 +53,34 @@ public class CallGraph {
     private void getAllClassesStream() throws IOException {
         classesStream = new ArrayList<InputStream>();
         for (String jarPath : jarPaths) {
-            JarFile jarFile = new JarFile(jarPath);
-            Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
-            while (jarEntryEnumeration.hasMoreElements()) {
-                JarEntry jarEntry = jarEntryEnumeration.nextElement();
-                if (jarEntry.getName().endsWith(".class")) {
-                    classesStream.add(jarFile.getInputStream(jarEntry));
+            if (jarPath.endsWith("/classes") || new File(jarPath).isDirectory()) {
+                findClassFiles(new File(jarPath));
+            } else {
+                JarFile jarFile = new JarFile(jarPath);
+                Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
+                while (jarEntryEnumeration.hasMoreElements()) {
+                    JarEntry jarEntry = jarEntryEnumeration.nextElement();
+                    if (jarEntry.getName().endsWith(".class")) {
+                        classesStream.add(jarFile.getInputStream(jarEntry));
+                    }
                 }
             }
+        }
+    }
+
+    private void findClassFiles(File file) {
+        try {
+            File[] files = file.listFiles();
+            for (File subFile : files != null ? files : new File[0]) {
+                if (subFile.isDirectory()) findClassFiles(subFile);
+                else {
+                    if (subFile.getName().endsWith(".class")) {
+                        classesStream.add(new FileInputStream(subFile));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
