@@ -51,7 +51,7 @@ public class CallGraph {
     }
 
     private void getAllClassesStream() throws IOException {
-        classesStream = new ArrayList<InputStream>();
+        classesStream = new ArrayList<>();
         for (String jarPath : jarPaths) {
             if (jarPath.endsWith("/classes") || new File(jarPath).isDirectory()) {
                 findClassFiles(new File(jarPath));
