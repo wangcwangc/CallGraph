@@ -1,32 +1,32 @@
 package callGraph.edge;
 
-import callGraph.vo.MethodVO;
+import callGraph.vo.DCGMethodVO;
 
 public class MethodCall {
 
-    private MethodVO callerMethod;
-    private MethodVO calledMethod;
+    private DCGMethodVO callerMethod;
+    private DCGMethodVO calledMethod;
     private int lineNumber;
 
-    public MethodCall(MethodVO callerMethod, MethodVO calledMethod, int lineNumber) {
+    public MethodCall(DCGMethodVO callerMethod, DCGMethodVO calledMethod, int lineNumber) {
         this.callerMethod = callerMethod;
         this.calledMethod = calledMethod;
         this.lineNumber = lineNumber;
     }
 
-    public MethodVO getCallerMethod() {
+    public DCGMethodVO getCallerMethod() {
         return callerMethod;
     }
 
-    public void setCallerMethod(MethodVO callerMethod) {
+    public void setCallerMethod(DCGMethodVO callerMethod) {
         this.callerMethod = callerMethod;
     }
 
-    public MethodVO getCalledMethod() {
+    public DCGMethodVO getCalledMethod() {
         return calledMethod;
     }
 
-    public void setCalledMethod(MethodVO calledMethod) {
+    public void setCalledMethod(DCGMethodVO calledMethod) {
         this.calledMethod = calledMethod;
     }
 

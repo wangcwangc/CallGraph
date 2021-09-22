@@ -1,11 +1,11 @@
 package callGraph.vo;
 
-public class MethodVO {
+public class DCGMethodVO {
     private String className;
     private String methodName;
     private String desc;
 
-    public MethodVO(String className, String methodName, String desc) {
+    public DCGMethodVO(String className, String methodName, String desc) {
         this.className = className.replaceAll("/", ".");
         this.methodName = methodName.replaceAll("/", ".");
         this.desc = desc.replaceAll("/", ".");

@@ -1,7 +1,6 @@
 package callGraph.vo;
 
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -49,7 +48,7 @@ public class SourceClassManager {
     }
 
     private static List<InputStream> findClassFiles(File file) {
-        ArrayList<InputStream> classesStream = new ArrayList<InputStream>();
+        ArrayList<InputStream> classesStream = new ArrayList<>();
         try {
             File[] files = file.listFiles();
             for (File subFile : files != null ? files : new File[0]) {
@@ -74,12 +73,12 @@ public class SourceClassManager {
             ClassReader classReader = new ClassReader(classInputStream);
             ClassNode classNode = new ClassNode();
             classReader.accept(classNode, 0);
-            List<MethodVO> methodVOList = new ArrayList<>();
+            List<DCGMethodVO> DCGMethodVOList = new ArrayList<>();
             for (MethodNode methodNode : classNode.methods) {
-                MethodVO methodVO = new MethodVO(classNode.name, methodNode.name, methodNode.desc);
-                methodVOList.add(methodVO);
+                DCGMethodVO DCGMethodVO = new DCGMethodVO(classNode.name, methodNode.name, methodNode.desc);
+                DCGMethodVOList.add(DCGMethodVO);
             }
-            classSet.add(new DCGClassVO(classNode.access, classNode.superName, classNode.name, methodVOList));
+            classSet.add(new DCGClassVO(classNode.access, classNode.superName, classNode.name, DCGMethodVOList));
         }
         return classSet;
     }

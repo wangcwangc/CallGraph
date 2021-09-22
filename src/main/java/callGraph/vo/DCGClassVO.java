@@ -6,9 +6,9 @@ public class DCGClassVO {
     private int access;
     private String superName;
     private String className;
-    private List<MethodVO> methods;
+    private List<DCGMethodVO> methods;
 
-    public DCGClassVO(int access, String superName, String className, List<MethodVO> methods) {
+    public DCGClassVO(int access, String superName, String className, List<DCGMethodVO> methods) {
         this.access = access;
         this.superName = superName.replaceAll("/", ".");
         this.className = className.replaceAll("/", ".");
@@ -39,11 +39,11 @@ public class DCGClassVO {
         this.superName = superName;
     }
 
-    public List<MethodVO> getMethods() {
+    public List<DCGMethodVO> getMethods() {
         return methods;
     }
 
-    public void setMethods(List<MethodVO> methods) {
+    public void setMethods(List<DCGMethodVO> methods) {
         this.methods = methods;
     }
 }

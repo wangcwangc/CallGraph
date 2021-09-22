@@ -2,7 +2,7 @@ package callGraph;
 
 import callGraph.edge.MethodCall;
 import callGraph.edge.MethodCallManager;
-import callGraph.vo.MethodVO;
+import callGraph.vo.DCGMethodVO;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.*;
 
@@ -94,15 +94,15 @@ public class CallGraph {
             ClassNode classNode = new ClassNode();
             classReader.accept(classNode, 0);
             for (MethodNode methodNode : classNode.methods) {
-                MethodVO callerMethodVO = new MethodVO(classNode.name, methodNode.name, methodNode.desc);
+                DCGMethodVO callerDCGMethodVO = new DCGMethodVO(classNode.name, methodNode.name, methodNode.desc);
                 ListIterator<AbstractInsnNode> instructions = methodNode.instructions.iterator();
                 int lineNumber = -1;
                 while (instructions.hasNext()) {
                     AbstractInsnNode node = instructions.next();
                     if (node instanceof MethodInsnNode) {
-                        MethodVO calledMethodVO = new MethodVO(((MethodInsnNode) node).owner,
+                        DCGMethodVO calledDCGMethodVO = new DCGMethodVO(((MethodInsnNode) node).owner,
                                 ((MethodInsnNode) node).name, ((MethodInsnNode) node).desc);
-                        MethodCall methodCall = new MethodCall(callerMethodVO, calledMethodVO, lineNumber);
+                        MethodCall methodCall = new MethodCall(callerDCGMethodVO, calledDCGMethodVO, lineNumber);
                         MethodCallManager.getInstance().addMethodCall(methodCall);
                     }
                     if (node instanceof LineNumberNode) {
