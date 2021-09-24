@@ -14,6 +14,7 @@ public class DCGClassLoader extends URLClassLoader {
         for (String path : paths) {
             try {
                 urls[i] = new File(path).toURI().toURL();
+                i++;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
