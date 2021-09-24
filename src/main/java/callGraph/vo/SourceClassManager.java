@@ -13,8 +13,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class SourceClassManager {
-    static ClassLoader classLoader = new ClassLoader() {
-    };
 
     public static Set<String> getAllClassesFromPaths(List<String> paths) throws IOException {
         Set<String> classSet = new HashSet<>();
