@@ -1,5 +1,6 @@
 package callGraph.vo;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -7,7 +8,7 @@ public class DCGClassVO {
     private int access;
     private String superName;
     private String className;
-    private List<DCGMethodVO> methods;
+    private List<DCGMethodVO> methods = new ArrayList<>();
     private DCGClassVO superDCGClassVO;//?
     private HashSet<DCGClassVO> subDCGClassVO = new HashSet<>();
 

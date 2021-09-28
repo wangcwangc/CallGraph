@@ -77,12 +77,12 @@ public class SourceClassManager {
             dcgClassVO.setAccess(classNode.access);
             dcgClassVO.setClassName(classNode.name);
             dcgClassVO.setSuperName(classNode.superName);
-            List<DCGMethodVO> DCGMethodVOList = new ArrayList<>();
+            List<DCGMethodVO> dcgMethodVOList = new ArrayList<>();
             for (MethodNode methodNode : classNode.methods) {
                 DCGMethodVO DCGMethodVO = new DCGMethodVO(methodNode.access, classNode.name, methodNode.name, methodNode.desc);
-                DCGMethodVOList.add(DCGMethodVO);
+                dcgMethodVOList.add(DCGMethodVO);
             }
-            dcgClassVO.setMethods(DCGMethodVOList);
+            dcgClassVO.setMethods(dcgMethodVOList);
             addSuperDCGClassVO(dcgClassVO, classNode.superName.replaceAll("/", "."));
         }
         return DCGClassPool;
