@@ -60,7 +60,6 @@ public class DCGClassVO {
     }
 
     public void addSubDCGClassVO(DCGClassVO dcgClassVO) {
-        if (subDCGClassVO == null) subDCGClassVO = new HashSet<>();
         subDCGClassVO.add(dcgClassVO);
     }
 

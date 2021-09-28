@@ -14,7 +14,7 @@ import java.util.jar.JarFile;
 
 public class SourceClassManager {
 
-    private static Map<String, DCGClassVO> DCGClassPool = new HashMap<>();
+    public static Map<String, DCGClassVO> DCGClassPool = new HashMap<>();
 
     public static Set<String> getAllClassesFromPaths(List<String> paths) throws IOException {
         Set<String> classSet = new HashSet<>();

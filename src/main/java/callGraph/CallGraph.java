@@ -2,7 +2,9 @@ package callGraph;
 
 import callGraph.edge.MethodCall;
 import callGraph.edge.MethodCallManager;
+import callGraph.vo.DCGClassVO;
 import callGraph.vo.DCGMethodVO;
+import callGraph.vo.SourceClassManager;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.*;
 
@@ -10,10 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -89,6 +88,7 @@ public class CallGraph {
     }
 
     public void create() throws IOException {
+        SourceClassManager.getAllClassVOFromPaths(jarPaths);
         for (InputStream classInputStream : classesStream) {
             ClassReader classReader = new ClassReader(classInputStream);
             ClassNode classNode = new ClassNode();
@@ -104,11 +104,27 @@ public class CallGraph {
                                 ((MethodInsnNode) node).name, ((MethodInsnNode) node).desc);
                         MethodCall methodCall = new MethodCall(callerDCGMethodVO, calledDCGMethodVO, lineNumber);
                         MethodCallManager.getInstance().addMethodCall(methodCall);
+                        addDynamicMethodCall(methodCall);
                     }
                     if (node instanceof LineNumberNode) {
                         lineNumber = ((LineNumberNode) node).line;
                     }
                 }
+            }
+        }
+    }
+
+    private void addDynamicMethodCall(MethodCall methodCall) {
+        Map<String, DCGClassVO> dcgClassVOMap = SourceClassManager.DCGClassPool;
+        DCGMethodVO calledMethod = methodCall.getCalledMethod();
+        String calledDCGMethodVOClassName = calledMethod.getClassName();
+        if (dcgClassVOMap.containsKey(calledDCGMethodVOClassName)) {
+            for (DCGClassVO subDCGClassVO : dcgClassVOMap.get(calledDCGMethodVOClassName).getSubDCGClassVO()) {
+                DCGMethodVO dynamicDCGMethodVO = new DCGMethodVO(subDCGClassVO.getClassName(),
+                        calledMethod.getMethodName(), calledMethod.getDesc());
+                MethodCall dynamicMethodCall = new MethodCall(methodCall.getCallerMethod(), dynamicDCGMethodVO,
+                        methodCall.getLineNumber());
+                MethodCallManager.getInstance().addMethodCall(dynamicMethodCall);
             }
         }
     }
