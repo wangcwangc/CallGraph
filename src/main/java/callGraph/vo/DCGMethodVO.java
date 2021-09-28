@@ -5,27 +5,12 @@ public class DCGMethodVO {
     private String className;
     private String methodName;
     private String desc;
-    private int opcode;
 
     public DCGMethodVO(int access, String className, String methodName, String desc) {
         this.access = access;
         this.className = className.replaceAll("/", ".");
         this.methodName = methodName.replaceAll("/", ".");
         this.desc = desc.replaceAll("/", ".");
-    }
-
-    public DCGMethodVO(String className, String methodName, String desc) {
-        this.className = className.replaceAll("/", ".");
-        this.methodName = methodName.replaceAll("/", ".");
-        this.desc = desc.replaceAll("/", ".");
-        this.opcode = opcode;
-    }
-
-    public DCGMethodVO(String className, String methodName, String desc, int opcode) {
-        this.className = className.replaceAll("/", ".");
-        this.methodName = methodName.replaceAll("/", ".");
-        this.desc = desc.replaceAll("/", ".");
-        this.opcode = opcode;
     }
 
     public int getAccess() {
@@ -62,14 +47,6 @@ public class DCGMethodVO {
 
     public String getSig() {
         return className + ": " + methodName + desc;
-    }
-
-    public int getOpcode() {
-        return opcode;
-    }
-
-    public void setOpcode(int opcode) {
-        this.opcode = opcode;
     }
 
     @Override

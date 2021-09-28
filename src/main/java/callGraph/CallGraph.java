@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -95,14 +96,14 @@ public class CallGraph {
             ClassNode classNode = new ClassNode();
             classReader.accept(classNode, 0);
             for (MethodNode methodNode : classNode.methods) {
-                DCGMethodVO callerDCGMethodVO = new DCGMethodVO(classNode.name, methodNode.name, methodNode.desc);
+                DCGMethodVO callerDCGMethodVO = new DCGMethodVO(methodNode.access, classNode.name, methodNode.name, methodNode.desc);
                 ListIterator<AbstractInsnNode> instructions = methodNode.instructions.iterator();
                 int lineNumber = -1;
                 while (instructions.hasNext()) {
                     AbstractInsnNode node = instructions.next();
                     if (node instanceof MethodInsnNode) {
-                        DCGMethodVO calledDCGMethodVO = new DCGMethodVO(((MethodInsnNode) node).owner,
-                                ((MethodInsnNode) node).name, ((MethodInsnNode) node).desc, node.getOpcode());
+                        DCGMethodVO calledDCGMethodVO = new DCGMethodVO(node.getOpcode(), ((MethodInsnNode) node).owner,
+                                ((MethodInsnNode) node).name, ((MethodInsnNode) node).desc);
                         MethodCall methodCall = new MethodCall(callerDCGMethodVO, calledDCGMethodVO, lineNumber);
                         MethodCallManager.getInstance().addMethodCall(methodCall);
                         addDynamicMethodCall(methodCall);
@@ -116,12 +117,14 @@ public class CallGraph {
     }
 
     private void addDynamicMethodCall(MethodCall methodCall) {
-        if (Opcodes.ACC_PRIVATE == methodCall.getCallerMethod().getOpcode()) return;
-        Map<String, DCGClassVO> dcgClassVOMap = SourceClassManager.DCGClassPool;
-        String calledDCGMethodVOClassName = methodCall.getCalledMethod().getClassName();
-        if (dcgClassVOMap.containsKey(calledDCGMethodVOClassName)) {
-            HashSet<DCGClassVO> set = dcgClassVOMap.get(calledDCGMethodVOClassName).getSubDCGClassVO();
-            add(methodCall, set);
+        if (Modifier.isPublic(methodCall.getCallerMethod().getAccess())) {
+            Map<String, DCGClassVO> dcgClassVOMap = SourceClassManager.DCGClassPool;
+            String calledDCGMethodVOClassName = methodCall.getCalledMethod().getClassName();
+            if (calledDCGMethodVOClassName.equals("java.lang.Object")) return;
+            if (dcgClassVOMap.containsKey(calledDCGMethodVOClassName)) {
+                HashSet<DCGClassVO> set = dcgClassVOMap.get(calledDCGMethodVOClassName).getSubDCGClassVO();
+                add(methodCall, set);
+            }
         }
     }
 
@@ -131,7 +134,7 @@ public class CallGraph {
                 add(methodCall, subDCGClassVO.getSubDCGClassVO());
             }
             DCGMethodVO calledMethod = methodCall.getCalledMethod();
-            DCGMethodVO dynamicDCGMethodVO = new DCGMethodVO(subDCGClassVO.getClassName(),
+            DCGMethodVO dynamicDCGMethodVO = new DCGMethodVO(calledMethod.getAccess(), subDCGClassVO.getClassName(),
                     calledMethod.getMethodName(), calledMethod.getDesc());
             MethodCall dynamicMethodCall = new MethodCall(methodCall.getCallerMethod(), dynamicDCGMethodVO,
                     methodCall.getLineNumber());
