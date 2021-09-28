@@ -1,14 +1,30 @@
 package callGraph.vo;
 
 public class DCGMethodVO {
+    private int access;
     private String className;
     private String methodName;
     private String desc;
+
+    public DCGMethodVO(int access, String className, String methodName, String desc) {
+        this.access = access;
+        this.className = className.replaceAll("/", ".");
+        this.methodName = methodName.replaceAll("/", ".");
+        this.desc = desc.replaceAll("/", ".");
+    }
 
     public DCGMethodVO(String className, String methodName, String desc) {
         this.className = className.replaceAll("/", ".");
         this.methodName = methodName.replaceAll("/", ".");
         this.desc = desc.replaceAll("/", ".");
+    }
+
+    public int getAccess() {
+        return access;
+    }
+
+    public void setAccess(int access) {
+        this.access = access;
     }
 
     public String getClassName() {

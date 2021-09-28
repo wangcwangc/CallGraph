@@ -8,8 +8,17 @@ public class DCGClassVO {
     private String superName;
     private String className;
     private List<DCGMethodVO> methods;
-    private HashSet<DCGClassVO> parentDCGClassVO;//?
-    private HashSet<DCGClassVO> subDCGClassVO;
+    private DCGClassVO superDCGClassVO;//?
+    private HashSet<DCGClassVO> subDCGClassVO = new HashSet<>();
+
+    public DCGClassVO() {
+    }
+
+    public DCGClassVO(int access, String superName, String className) {
+        this.access = access;
+        this.superName = superName.replaceAll("/", ".");
+        this.className = className.replaceAll("/", ".");
+    }
 
     public DCGClassVO(int access, String superName, String className, List<DCGMethodVO> methods) {
         this.access = access;
@@ -23,7 +32,7 @@ public class DCGClassVO {
     }
 
     public void setClassName(String className) {
-        this.className = className;
+        this.className = className.replaceAll("/", ".");
     }
 
     public int getAccess() {
@@ -39,7 +48,7 @@ public class DCGClassVO {
     }
 
     public void setSuperName(String superName) {
-        this.superName = superName;
+        this.superName = superName.replaceAll("/", ".");
     }
 
     public List<DCGMethodVO> getMethods() {
@@ -51,6 +60,7 @@ public class DCGClassVO {
     }
 
     public void addSubDCGClassVO(DCGClassVO dcgClassVO) {
+        if (subDCGClassVO == null) subDCGClassVO = new HashSet<>();
         subDCGClassVO.add(dcgClassVO);
     }
 
@@ -58,11 +68,21 @@ public class DCGClassVO {
         return subDCGClassVO;
     }
 
-    public void addParentDCGClassVO(DCGClassVO dcgClassVO) {
-        parentDCGClassVO.add(dcgClassVO);
+    public void setSuperDCGClassVO(DCGClassVO dcgClassVO) {
+        superDCGClassVO = dcgClassVO;
     }
 
-    public HashSet<DCGClassVO> getParentDCGClassVO() {
-        return parentDCGClassVO;
+    public DCGClassVO getSuperDCGClassVO() {
+        return superDCGClassVO;
+    }
+
+    @Override
+    public String toString() {
+        return "DCGClassVO{" +
+                "access=" + access +
+                ", superName='" + superName + '\'' +
+                ", className='" + className + '\'' +
+                ", methods=" + methods +
+                '}';
     }
 }

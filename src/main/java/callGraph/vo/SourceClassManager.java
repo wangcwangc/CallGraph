@@ -14,6 +14,8 @@ import java.util.jar.JarFile;
 
 public class SourceClassManager {
 
+    private static Map<String, DCGClassVO> DCGClassPool = new HashMap<>();
+
     public static Set<String> getAllClassesFromPaths(List<String> paths) throws IOException {
         Set<String> classSet = new HashSet<>();
         List<InputStream> classesStream = getAllClassesStream(paths);
@@ -64,20 +66,32 @@ public class SourceClassManager {
     }
 
 
-    public static Set<DCGClassVO> getAllClassVOFromPaths(List<String> paths) throws IOException {
-        Set<DCGClassVO> classSet = new HashSet<>();
+    public static Map<String, DCGClassVO> getAllClassVOFromPaths(List<String> paths) throws IOException {
         List<InputStream> classesStream = getAllClassesStream(paths);
         for (InputStream classInputStream : classesStream) {
             ClassReader classReader = new ClassReader(classInputStream);
             ClassNode classNode = new ClassNode();
             classReader.accept(classNode, 0);
+            String className = classNode.name.replaceAll("/", ".");
+            DCGClassVO dcgClassVO = DCGClassPool.computeIfAbsent(className, k -> new DCGClassVO());
+            dcgClassVO.setAccess(classNode.access);
+            dcgClassVO.setClassName(classNode.name);
+            dcgClassVO.setSuperName(classNode.superName);
             List<DCGMethodVO> DCGMethodVOList = new ArrayList<>();
             for (MethodNode methodNode : classNode.methods) {
-                DCGMethodVO DCGMethodVO = new DCGMethodVO(classNode.name, methodNode.name, methodNode.desc);
+                DCGMethodVO DCGMethodVO = new DCGMethodVO(methodNode.access, classNode.name, methodNode.name, methodNode.desc);
                 DCGMethodVOList.add(DCGMethodVO);
             }
-            classSet.add(new DCGClassVO(classNode.access, classNode.superName, classNode.name, DCGMethodVOList));
+            dcgClassVO.setMethods(DCGMethodVOList);
+            addSuperDCGClassVO(dcgClassVO, classNode.superName.replaceAll("/", "."));
         }
-        return classSet;
+        return DCGClassPool;
+    }
+
+    private static void addSuperDCGClassVO(DCGClassVO dcgClassVO, String superClassName) {
+        DCGClassVO superDCGClassVO = DCGClassPool.computeIfAbsent(superClassName, k -> new DCGClassVO());
+        superDCGClassVO.setClassName(superClassName);
+        superDCGClassVO.addSubDCGClassVO(dcgClassVO);
+        dcgClassVO.setSuperDCGClassVO(superDCGClassVO);
     }
 }
