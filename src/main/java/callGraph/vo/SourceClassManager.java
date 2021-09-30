@@ -83,7 +83,9 @@ public class SourceClassManager {
                 dcgMethodVOList.add(DCGMethodVO);
             }
             dcgClassVO.setMethods(dcgMethodVOList);
-            addSuperDCGClassVO(dcgClassVO, classNode.superName.replaceAll("/", "."));
+            if (classNode.superName != null) {
+                addSuperDCGClassVO(dcgClassVO, classNode.superName.replaceAll("/", "."));
+            }
         }
         return DCGClassPool;
     }

@@ -49,7 +49,9 @@ public class DCGClassVO {
     }
 
     public void setSuperName(String superName) {
-        this.superName = superName.replaceAll("/", ".");
+        if (superName != null) {
+            this.superName = superName.replaceAll("/", ".");
+        }
     }
 
     public List<DCGMethodVO> getMethods() {
