@@ -77,6 +77,9 @@ public class SourceClassManager {
             dcgClassVO.setAccess(classNode.access);
             dcgClassVO.setClassName(classNode.name);
             dcgClassVO.setSuperName(classNode.superName);
+            for (String interfaceName : classNode.interfaces) {
+                dcgClassVO.addInterface(interfaceName);
+            }
             List<DCGMethodVO> dcgMethodVOList = new ArrayList<>();
             for (MethodNode methodNode : classNode.methods) {
                 DCGMethodVO DCGMethodVO = new DCGMethodVO(methodNode.access, classNode.name, methodNode.name, methodNode.desc);
@@ -85,6 +88,9 @@ public class SourceClassManager {
             dcgClassVO.setMethods(dcgMethodVOList);
             if (classNode.superName != null) {
                 addSuperDCGClassVO(dcgClassVO, classNode.superName.replaceAll("/", "."));
+            }
+            if (!classNode.interfaces.isEmpty()) {
+                addInterfaceDCGClassVO(dcgClassVO, dcgClassVO.getInterfaces());
             }
         }
         return DCGClassPool;
@@ -95,5 +101,13 @@ public class SourceClassManager {
         superDCGClassVO.setClassName(superClassName);
         superDCGClassVO.addSubDCGClassVO(dcgClassVO);
         dcgClassVO.setSuperDCGClassVO(superDCGClassVO);
+    }
+
+    private static void addInterfaceDCGClassVO(DCGClassVO dcgClassVO, List<String> interfaces) {
+        for (String interfaceName : interfaces) {
+            DCGClassVO interFaceDCGClassVO = DCGClassPool.computeIfAbsent(interfaceName, k -> new DCGClassVO());
+            interFaceDCGClassVO.setClassName(interfaceName);
+            interFaceDCGClassVO.addSubDCGClassVO(dcgClassVO);
+        }
     }
 }

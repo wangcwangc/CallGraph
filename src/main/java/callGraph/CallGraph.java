@@ -117,10 +117,15 @@ public class CallGraph {
     }
 
     private void addDynamicMethodCall(MethodCall methodCall) {
-        if (Modifier.isPublic(methodCall.getCallerMethod().getAccess())) {
+        if (Modifier.isPublic(methodCall.getCalledMethod().getAccess())
+                || Modifier.isAbstract(methodCall.getCalledMethod().getAccess())
+                || Modifier.isProtected(methodCall.getCalledMethod().getAccess())
+                || Modifier.isInterface(methodCall.getCalledMethod().getAccess())) {
             Map<String, DCGClassVO> dcgClassVOMap = SourceClassManager.DCGClassPool;
             String calledDCGMethodVOClassName = methodCall.getCalledMethod().getClassName();
-            if (calledDCGMethodVOClassName.equals("java.lang.Object")) return;
+            if (calledDCGMethodVOClassName.equals("java.lang.Object")
+                    || calledDCGMethodVOClassName.contains("java.lang"))
+                return;
             if (dcgClassVOMap.containsKey(calledDCGMethodVOClassName)) {
                 HashSet<DCGClassVO> set = dcgClassVOMap.get(calledDCGMethodVOClassName).getSubDCGClassVO();
                 add(methodCall, set);
@@ -136,6 +141,7 @@ public class CallGraph {
             DCGMethodVO calledMethod = methodCall.getCalledMethod();
             DCGMethodVO dynamicDCGMethodVO = new DCGMethodVO(calledMethod.getAccess(), subDCGClassVO.getClassName(),
                     calledMethod.getMethodName(), calledMethod.getDesc());
+            if (dynamicDCGMethodVO.getSig().equals(methodCall.getCallerMethod().getSig())) continue;
             MethodCall dynamicMethodCall = new MethodCall(methodCall.getCallerMethod(), dynamicDCGMethodVO,
                     methodCall.getLineNumber());
             MethodCallManager.getInstance().addMethodCall(dynamicMethodCall);

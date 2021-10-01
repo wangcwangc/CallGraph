@@ -7,11 +7,11 @@ import java.util.List;
 public class DCGClassVO {
     private int access;
     private String superName;
+    private List<String> interfaces = new ArrayList<>();
     private String className;
     private List<DCGMethodVO> methods = new ArrayList<>();
     private DCGClassVO superDCGClassVO;//?
     private HashSet<DCGClassVO> subDCGClassVO = new HashSet<>();
-
     public DCGClassVO() {
     }
 
@@ -26,6 +26,14 @@ public class DCGClassVO {
         this.superName = superName.replaceAll("/", ".");
         this.className = className.replaceAll("/", ".");
         this.methods = methods;
+    }
+
+    public List<String> getInterfaces() {
+        return interfaces;
+    }
+
+    public void addInterface(String interfaceName) {
+        interfaces.add(interfaceName.replaceAll("/", "."));
     }
 
     public String getClassName() {
