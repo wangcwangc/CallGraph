@@ -123,9 +123,7 @@ public class CallGraph {
                 || Modifier.isInterface(methodCall.getCalledMethod().getAccess())) {
             Map<String, DCGClassVO> dcgClassVOMap = SourceClassManager.DCGClassPool;
             String calledDCGMethodVOClassName = methodCall.getCalledMethod().getClassName();
-            if (calledDCGMethodVOClassName.equals("java.lang.Object")
-                    || calledDCGMethodVOClassName.contains("java.lang"))
-                return;
+            if (calledDCGMethodVOClassName.contains("java.lang")) return;
             if (dcgClassVOMap.containsKey(calledDCGMethodVOClassName)) {
                 HashSet<DCGClassVO> set = dcgClassVOMap.get(calledDCGMethodVOClassName).getSubDCGClassVO();
                 add(methodCall, set);
