@@ -6,7 +6,6 @@ import callGraph.vo.DCGClassVO;
 import callGraph.vo.DCGMethodVO;
 import callGraph.vo.SourceClassManager;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
 import java.io.File;
@@ -40,9 +39,12 @@ public class CallGraph {
     //方法调用边
     Set<MethodCall> methodCalls;
 
+
+    public void clearMethodCallManager() {
+        MethodCallManager.getInstance().clearMethodCalls();
+    }
+
     public void addPaths(List<String> jarPaths) {
-        //清空
-//        MethodCallManager.getInstance().clearMethodCalls();
         this.jarPaths = jarPaths;
         try {
             getAllClassesStream();
