@@ -38,7 +38,7 @@ public class CallGraph {
     //所有类文件的InputStream
     List<InputStream> classesStream;
     //方法调用边
-    List<MethodCall> methodCalls;
+    Set<MethodCall> methodCalls;
 
     public void addPaths(List<String> jarPaths) {
         //清空
@@ -85,7 +85,10 @@ public class CallGraph {
         }
     }
 
-    public List<MethodCall> getMethodCalls() {
+    public Set<MethodCall> getMethodCalls() {
+        if (methodCalls == null) {
+            methodCalls = MethodCallManager.getInstance().getMethodCalls();
+        }
         return methodCalls;
     }
 
@@ -102,8 +105,7 @@ public class CallGraph {
                 while (instructions.hasNext()) {
                     AbstractInsnNode node = instructions.next();
                     if (node instanceof MethodInsnNode) {
-                        DCGMethodVO calledDCGMethodVO = new DCGMethodVO(node.getOpcode(), ((MethodInsnNode) node).owner,
-                                ((MethodInsnNode) node).name, ((MethodInsnNode) node).desc);
+                        DCGMethodVO calledDCGMethodVO = new DCGMethodVO(node.getOpcode(), ((MethodInsnNode) node).owner, ((MethodInsnNode) node).name, ((MethodInsnNode) node).desc);
                         MethodCall methodCall = new MethodCall(callerDCGMethodVO, calledDCGMethodVO, lineNumber);
                         MethodCallManager.getInstance().addMethodCall(methodCall);
                         addDynamicMethodCall(methodCall);
@@ -117,10 +119,7 @@ public class CallGraph {
     }
 
     private void addDynamicMethodCall(MethodCall methodCall) {
-        if (Modifier.isPublic(methodCall.getCalledMethod().getAccess())
-                || Modifier.isAbstract(methodCall.getCalledMethod().getAccess())
-                || Modifier.isProtected(methodCall.getCalledMethod().getAccess())
-                || Modifier.isInterface(methodCall.getCalledMethod().getAccess())) {
+        if (Modifier.isPublic(methodCall.getCalledMethod().getAccess()) || Modifier.isAbstract(methodCall.getCalledMethod().getAccess()) || Modifier.isProtected(methodCall.getCalledMethod().getAccess()) || Modifier.isInterface(methodCall.getCalledMethod().getAccess())) {
             Map<String, DCGClassVO> dcgClassVOMap = SourceClassManager.DCGClassPool;
             String calledDCGMethodVOClassName = methodCall.getCalledMethod().getClassName();
             if (calledDCGMethodVOClassName.contains("java.lang")) return;
@@ -137,11 +136,9 @@ public class CallGraph {
                 add(methodCall, subDCGClassVO.getSubDCGClassVO());
             }
             DCGMethodVO calledMethod = methodCall.getCalledMethod();
-            DCGMethodVO dynamicDCGMethodVO = new DCGMethodVO(calledMethod.getAccess(), subDCGClassVO.getClassName(),
-                    calledMethod.getMethodName(), calledMethod.getDesc());
+            DCGMethodVO dynamicDCGMethodVO = new DCGMethodVO(calledMethod.getAccess(), subDCGClassVO.getClassName(), calledMethod.getMethodName(), calledMethod.getDesc());
             if (dynamicDCGMethodVO.getSig().equals(methodCall.getCallerMethod().getSig())) continue;
-            MethodCall dynamicMethodCall = new MethodCall(methodCall.getCallerMethod(), dynamicDCGMethodVO,
-                    methodCall.getLineNumber());
+            MethodCall dynamicMethodCall = new MethodCall(methodCall.getCallerMethod(), dynamicDCGMethodVO, methodCall.getLineNumber());
             MethodCallManager.getInstance().addMethodCall(dynamicMethodCall);
         }
     }
