@@ -1,8 +1,8 @@
-# Call Graph Generator
+# Call Graph
 
 ## Introduction
 
-The project aims to generate a call graph for Java JAR files or .class files using ASM. The call graph includes every call path from source to target, providing researchers with a lightweight tool to obtain a project's call graph. The project's call graph achieves the precision of Class Hierarchy Analysis (CHA), offering researchers a comprehensive perspective.
+The project aims to generate a call graph for Java JAR files or .class files using ASM. The call graph includes every call path from source to target, providing researchers with a lightweight tool to obtain a project's call graph. The project's call graph achieves the precision of Class Hierarchy Analysis (CHA).
 
 ## How to Use
 
