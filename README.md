@@ -40,7 +40,7 @@ In your Java code, call the following method to perform call graph analysis:
 ## Features
 
 - **ASM Integration:** Utilizes ASM to parse Java bytecode for accurate call graph generation.
-- **CHA Precision:** Achieves the precision of Class Hierarchy Analysis for a comprehensive view of the project's dependencies.
+- **CHA:** Achieves the precision of Class Hierarchy Analysis for a comprehensive view of the project's dependencies.
 - **Class and JAR Analysis:** Supports the analysis of individual classes or entire JAR packages.
 
 ## TODO
