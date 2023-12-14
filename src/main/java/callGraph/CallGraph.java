@@ -16,6 +16,11 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/***
+ * generate call graph
+ * 通过路径检索所有的.class文件和.jar文件，生成对应的调用关系
+ * 使用了单例模式，所以如果需要处理多个调用图，需要清理调用边池K
+ */
 public class CallGraph {
 
     private static CallGraph cg;
