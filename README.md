@@ -1,4 +1,4 @@
-# Call Graph Generator
+# Call Graph
 
 ## Introduction
 
